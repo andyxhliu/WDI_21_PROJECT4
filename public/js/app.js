@@ -47653,8 +47653,8 @@ angular
   .module('OneApp')
   .controller("MainController", MainController);
 
-MainController.$inject = ["$rootScope", "$state", "TokenService"];
-function MainController($rootScope, $state, TokenService) {
+MainController.$inject = ["$auth", "$rootScope", "$state", "TokenService"];
+function MainController($auth, $rootScope, $state, TokenService) {
 
   var self = this;
   
@@ -47677,6 +47677,12 @@ function MainController($rootScope, $state, TokenService) {
     this.currentUser = TokenService.decodeToken();
     $state.go("main");
   });
+
+  this.logout = function() {
+    $auth.logout();
+    this.currentUser = null;
+    $state.go("login");
+  }
 }
 angular
   .module("OneApp")
