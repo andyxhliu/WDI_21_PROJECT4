@@ -1,0 +1,26 @@
+{
+  "name": "wdi_21_project4",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "andyxhliu <andyxhliu@outlook.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-resource": "^1.5.8",
+    "angular-ui-router": "ui-router#^0.3.1",
+    "satellizer": "^0.15.5",
+    "bootstrap": "v4.0.0-alpha.3",
+    "socket.io-client": "^1.4.8",
+    "angular-jwt": "^0.1.3"
+  }
+}

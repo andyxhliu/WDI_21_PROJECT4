@@ -1,0 +1,23 @@
+<h1>Login</h1>
+
+<h3>Login with Email</h3>
+
+<form ng-submit="login.submit()">
+  <input type="text" name="email" ng-model="login.credentials.email">
+  <input type="password" name="password" ng-model="login.credentials.password">
+
+  <button>Submit</button>
+</form>
+
+
+
+<div id="login" class="row">
+  <div class="col-md-6 offset-md-3">
+    <div class="card card-block text-xs-center">
+      <h4 class="card-title">Welcome to OneApp</h4>
+      <p class="card-text">Sign in</p>
+      <button class="btn btn-primary" ng-click="login.authenticate('facebook')">Facebook</button>
+      <button class="btn btn-primary" ng-click="login.authenticate('github')">Github</button>
+    </div>
+  </div>
+</div>

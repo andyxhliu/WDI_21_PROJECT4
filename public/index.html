@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html ng-app="OneApp">
+<head>
+  <title>One</title>
+  <script src="/js/app.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/app.css">
+</head>
+<body ng-controller="MainController as main">
+  <header>
+    <nav>
+      <a ui-sref="main">One</a>
+      <a ng-if="!main.currentUser" ui-sref="login">Login</a>
+      <a ng-if="!main.currentUser" ui-sref="register">Register</a>
+      <a href="#" ng-if="main.currentUser" ng-click="main.logout()">Logout</a>
+    </nav>
+  </header>
+  <main div class="container-fluid" ui-view></main>
+</body>
+</html>
