@@ -47637,10 +47637,12 @@ function LoginController($auth, $state, $rootScope) {
     $auth.authenticate(provider)
       .then(function(res) {
         $rootScope.$broadcast("loggedIn");
+        $state.go('main');
       });
   }
 
   this.submit = function() {
+    console.log("hello");
     $auth.login(this.credentials, {
       url: "/login"
     }).then(function(){
@@ -47649,6 +47651,7 @@ function LoginController($auth, $state, $rootScope) {
     })
   }
 }
+
 angular
   .module('OneApp')
   .controller("MainController", MainController);
@@ -47674,8 +47677,7 @@ function MainController($auth, $rootScope, $state, TokenService) {
   });
 
   $rootScope.$on("loggedIn", function() {
-    this.currentUser = TokenService.decodeToken();
-    $state.go("main");
+    self.currentUser = TokenService.decodeToken();
   });
 
   this.logout = function() {
@@ -47694,23 +47696,57 @@ function RegisterController($auth, $state, $rootScope) {
   this.user = {};
 
   this.submit = function() {
+    console.log(this.user);
     $auth.signup(this.user, {
-      url: '/register'
+      url: '/register',
     })
-    .then(function(){
-      $rootScope.$broadcast("loggedIn");
-      $state.go("main");
+    .then(function(res){
+      $state.go("login");
     })
   }
 }
+
+// angular
+//   .module('OneApp')
+//   .directive('file', file);
+
+// function file() {
+//   return {
+//     restrict: 'A',
+//     require: "ngModel",
+//     link: function(scope, element, attrs, ngModel) {
+//       element.on('change', function(e) {
+//         console.log(e.target.files[0]);
+//         ngModel.$setViewValue(e.target.files[0]);
+//       });
+//     }
+//   }
+// }
 angular
   .module('OneApp')
   .factory('User', User);
 
+// User.$inject = ["$resource", "formData"];
 User.$inject = ["$resource"];
-function User($resource) {
+// function User($resource, formData) {
+//   return $resource('/users', { id: '@_id' }, {
+//     update: { 
+//       method: "PUT",
+//       headers: { 'Content-Type': undefined },
+//       transformRequest: formData.transform 
+//     },
+//     save: {
+//       method: "POST",
+//       headers: { 'Content-Type': undefined },
+//       transformRequest: formData.transform
+//     }
+//   });
+// }
+function User($resource, formData) {
   return $resource('/users', { id: '@_id' }, {
-    update: { method: "PUT" }
+    update: { 
+      method: "PUT"
+    }
   });
 }
 angular
@@ -47729,6 +47765,23 @@ function AuthInterceptor($rootScope) {
     }
   }
 }
+// angular
+//   .module('OneApp')
+//   .factory('formData', formData);
+
+// function formData() {
+//   return {
+//     transform: function(data) {
+//       var formData = new FormData();
+//       angular.forEach(data, function(value, key) {
+//         if(value._id) value = value._id;
+//         if(!key.match(/^\$/)) formData.append(key, value);
+//       });
+
+//       return formData;
+//     }
+//   }
+// }
 angular
   .module("OneApp")
   .service("TokenService", TokenService);

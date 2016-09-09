@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
+// var s3 = require('../config/s3');
 
 var userSchema = new mongoose.Schema({
   name: String,
@@ -9,6 +10,15 @@ var userSchema = new mongoose.Schema({
   githubId: String,
   passwordHash: String
 });
+
+// userSchema.path('profileImage')
+//   .get(function(profileImage) {
+//     return s3.endpoint.href + process.env.AWS_BUCKET_NAME + "/" + profileImage;
+//   })
+//   .set(function(profileImage) {
+//     return profileImage.split('/').splice(-1)[0];
+//   });
+
 
 userSchema.virtual('password')
   .set(function(password) {

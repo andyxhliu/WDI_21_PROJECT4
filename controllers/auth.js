@@ -3,6 +3,7 @@ var User = require('../models/user');
 var secret = require('../config/tokens').secret;
 
 function login(req, res) {
+  console.log("In controllers auth login");
   User.findOne({ email: req.body.email }, function(err, user) {
     if(err) res.send(500).json(err);
     if(!user || !user.validatePassword(req.body.password)) {
@@ -20,6 +21,7 @@ function login(req, res) {
 }
 
 function register(req, res) {
+  console.log("In controllers auth register");
   User.create(req.body, function(err, user) {
     if(err) return res.status(400).json(err);
 
