@@ -1,6 +1,16 @@
-<h1>This is main page</h1>
 <h5>{{ main.currentUser.name }}</h5>
-<h5>{{ main.currentUser.name }}</h5>
+<!-- <h5>{{ main.currentUser.name }}</h5> -->
 <img ng-src="{{ main.currentUser.profileImage }}"/>
+<!-- <ul>
+  <li><a href="#" class="genre">dubstep</li>
+  <li><a href="#" class="genre">electronic</li>
+  <li><a href="#" class="genre">punk</li>
+</ul> -->
 
-<div id="target"></div>
+<button ng-click="main.playSomeSound(dubstep)"></button>
+<!-- 
+<audio andy-audio ng-repeat="track in main.tracks" ng-src="{{ track.stream_url }}" controls></audio> -->
+
+<li ng-repeat="track in main.tracks">
+  <img ng-if="track.artwork_url !== null" ng-src="{{ track.artwork_url }}" err-src="http://www.centurymedia.com/media/news/large/635877535374959334.jpg"/>
+</li>

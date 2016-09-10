@@ -47579,11 +47579,19 @@ module.exports = yeast;
 
 angular
   .module("OneApp", ['ngResource', 'satellizer', 'ui.router', 'angular-jwt'])
-  .constant("GIPHY_KEY", "dc6zaTOxFJmzC")
+  .constant("SOUNDCLOUD_KEY", "057f6e8bbc48cc7f8ef8520b83444560")
+  .config(whitelistUrls)
   .config(setupInterceptor)
   .config(oauthConfig)
   .config(Router);
 
+whitelistUrls.$inject = ['$sceDelegateProvider'];
+function whitelistUrls($sceDelegateProvider){
+  $sceDelegateProvider.resourceUrlWhitelist([
+    'self',
+    'https://api.soundcloud.com/**'
+  ]);
+}
 setupInterceptor.$inject = ["$httpProvider"];
 function setupInterceptor($httpProvider) {
   return $httpProvider.interceptors.push("AuthInterceptor");
@@ -47656,10 +47664,12 @@ angular
   .module('OneApp')
   .controller("MainController", MainController);
 
-MainController.$inject = ["$auth", "$rootScope", "$state", "TokenService"];
-function MainController($auth, $rootScope, $state, TokenService) {
+MainController.$inject = ["$auth", "$rootScope", "$state", "TokenService", "SOUNDCLOUD_KEY"];
+function MainController($auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY) {
 
   var self = this;
+
+  this.tracks = [];
   
   this.currentUser = TokenService.decodeToken();
   this.connected = false;
@@ -47676,6 +47686,14 @@ function MainController($auth, $rootScope, $state, TokenService) {
     $state.go("login");
   });
 
+  $rootScope.$on('playing', function(event, time) {
+    console.log("audio is playing", time);
+  });
+
+  $rootScope.$on('paused', function(event, time) {
+    console.log("audio is paused", time);
+  });
+
   $rootScope.$on("loggedIn", function() {
     self.currentUser = TokenService.decodeToken();
   });
@@ -47685,6 +47703,27 @@ function MainController($auth, $rootScope, $state, TokenService) {
     this.currentUser = null;
     $state.go("login");
   }
+
+  this.playSomeSound = function(genre) {
+    SC.initialize({
+      client_id: "057f6e8bbc48cc7f8ef8520b83444560" 
+    });
+    SC.get('/tracks', {
+      genres: genre,
+      bpm: {
+        from: 100
+      }
+    }, function(tracks) {
+      console.log(tracks);
+      $rootScope.$applyAsync(function() {
+        self.tracks = tracks.map(function(track) {
+          track.stream_url += "?client_id=" + SOUNDCLOUD_KEY;
+          return track;
+        });
+      });
+    });
+  }
+
 }
 angular
   .module("OneApp")
@@ -47696,7 +47735,6 @@ function RegisterController($auth, $state, $rootScope) {
   this.user = {};
 
   this.submit = function() {
-    console.log(this.user);
     $auth.signup(this.user, {
       url: '/register',
     })
@@ -47706,6 +47744,39 @@ function RegisterController($auth, $state, $rootScope) {
   }
 }
 
+angular
+  .module('OneApp')
+  .directive('andyAudio', andyAudio);
+
+andyAudio.$inject = ['$rootScope'];
+function andyAudio($rootScope) {
+  return {
+    restrict: 'A',
+    link: function(scope, element) {
+      element[0].onpause = function() {
+        $rootScope.$broadcast('paused', this.currentTime);
+      }
+      element[0].onplay = function() {
+        $rootScope.$broadcast('playing', this.currentTime);
+      }
+    }
+  }
+}
+angular
+  .module("OneApp")
+  .directive("errSrc", errSrc)
+
+function errSrc() {
+  return {
+      link: function(scope, element, attrs) {
+        element.bind('error', function() {
+          if (attrs.src != attrs.errSrc) {
+            attrs.$set('src', attrs.errSrc);
+          }
+        });
+      }
+    }
+}
 // angular
 //   .module('OneApp')
 //   .directive('file', file);
