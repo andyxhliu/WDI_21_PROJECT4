@@ -38,7 +38,15 @@
   </div>
 
   <div class='col-lg-2 right-side-bar' id="chat-area">
-    
+    <ul>
+      <li ng-repeat="message in roomsShow.all track by $index">{{message}}</li>
+    </ul>
+    <button ng-click="roomsShow.sendMessage()"></button>
+
+    <form>
+      <input type="text" ng-model="roomsShow.message">
+      <button type="submit">Send</button>
+    </form>
   </div>
 
 </div>
