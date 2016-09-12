@@ -4,17 +4,35 @@
   <title>One</title>
   <script src="http://connect.soundcloud.com/sdk.js"></script>
   <script src="/js/app.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/css/app.css">
 </head>
 <body ng-controller="MainController as main">
-  <header>
-    <nav>
-      <a ui-sref="main">One</a>
+  <nav class="navbar header-basic-light">
+    <div ng-class="main.textShow ? 'logo' : 'logo-hide'">
+      <img ng-if="main.textShow" id="logo-img" src="/images/logo.png"/>
+      <h1 id="logo-text">One</h1>
+    </div>
+    <button ng-click="main.textMuted()" ng-class="main.textShow ? 'text-muted-btn' : 'text-muted-btn-active'"></button>
+    <div id="search-box">
+      <div class="input-group stylish-input-group">
+        <span class="input-group-addon">
+          <button type="submit">
+          </button>  
+        </span>
+        <input type="text" class="form-control"  placeholder="Search Sonds, Albums ..." >
+      </div>
+    </div>
+    <div class="control-panel">
       <a ng-if="!main.currentUser" ui-sref="login">Login</a>
       <a ng-if="!main.currentUser" ui-sref="register">Register</a>
-      <a href="#" ng-if="main.currentUser" ng-click="main.logout()">Logout</a>
-    </nav>
-  </header>
-  <main div class="container-fluid" ui-view></main>
+      <a href="#" id="logout" ng-if="main.currentUser" ng-click="main.logout()">Logout</a>
+      <div class="profile">
+        Welcome, {{ main.currentUser.name }} 
+        <img id="profile-img" ng-src="{{ main.currentUser.profileImage }}"/>
+      </div>
+    </div>
+  </nav>
+  <main ui-view></main>
 </body>
 </html>

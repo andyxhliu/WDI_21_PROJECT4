@@ -1,16 +1,63 @@
-<h5>{{ main.currentUser.name }}</h5>
-<!-- <h5>{{ main.currentUser.name }}</h5> -->
-<img ng-src="{{ main.currentUser.profileImage }}"/>
-<!-- <ul>
-  <li><a href="#" class="genre">dubstep</li>
-  <li><a href="#" class="genre">electronic</li>
-  <li><a href="#" class="genre">punk</li>
-</ul> -->
 
-<button ng-click="main.playSomeSound(dubstep)"></button>
-<!-- 
-<audio andy-audio ng-repeat="track in main.tracks" ng-src="{{ track.stream_url }}" controls></audio> -->
+<!-- <button ng-click="main.randomSelection()">Random</button> -->
 
-<li ng-repeat="track in main.tracks">
-  <img ng-if="track.artwork_url !== null" ng-src="{{ track.artwork_url }}" err-src="http://www.centurymedia.com/media/news/large/635877535374959334.jpg"/>
-</li>
+<!-- <audio andy-audio ng-src="{{ main.currentSound }}" autoplay controls></audio>
+ -->
+<div id="wrapper">
+  <div class="overlay"></div>
+
+  <div ng-class="main.textShow ? 'navbar navbar-inverse navbar-fixed-top sidebar-wrapper' : 'navbar navbar-inverse navbar-fixed-top sidebar-wrapper-sm'" role="navigation">
+      <ul class="nav sidebar-nav">
+          <li class="sidebar-brand">
+              <a ng-if="main.textShow" class="sidebar-title">
+                Discover
+              </a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/whatsnew.png"/><a ng-if="main.textShow" href="#">What's New</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/genre.png"/><a href="#" ng-if="main.textShow">Genres</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a href="#" ng-if="main.textShow">Rooms</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/radio.png"/><a href="#" ng-if="main.textShow">Radio</a>
+          </li>
+      </ul>
+      <ul class="nav sidebar-nav sidebar-wrapper-2">
+      </ul>
+  </div>
+  <div id="page-content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-2" id="panel">
+              <h1>Discover</h1>
+              <button ng-click="main.playSomeSound(hiphop)">Start</button>
+              <div class="row">
+                <div ng-repeat="track in main.tracks track by $index" ng-if="track.artwork_url !== null" class="col-md-9 grid" id="grid-single">
+                  <img ng-click="main.inputSound(track.stream_url)" class="grid-img img-rounded" ng-src="{{ track.artwork_url }}" err-src="http://www.centurymedia.com/media/news/large/635877535374959334.jpg">
+                  <div class="grid-info">
+                    <span class="song-header">Song Title</span></br>
+                    <span class="song-artist">Artist</span></br>
+                    <span class="song-duration">Duration</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class='col-lg-2 right-side-bar'>
+    <button id="new-group" class="btn btn-info">New Group + </button>
+    <h6>Your Group</h6>
+    <ul class="nav nav-tabs nav-stacked">
+      <li><a href='#'>Another Link 1</a></li>
+      <li><a href='#'>Another Link 2</a></li>
+      <li><a href='#'>Another Link 3</a></li>
+    </ul>
+  </div>
+</div>
+

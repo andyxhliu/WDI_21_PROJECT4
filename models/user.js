@@ -8,7 +8,8 @@ var userSchema = new mongoose.Schema({
   profileImage: String,
   facebookId: String,
   githubId: String,
-  passwordHash: String
+  passwordHash: String,
+  rooms: [{ type: mongoose.Schema.ObjectId, ref: 'Room'}]
 });
 
 // userSchema.path('profileImage')

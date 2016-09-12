@@ -1,0 +1,42 @@
+<div id="wrapper">
+  <div class="overlay"></div>
+
+  <div ng-class="main.textShow ? 'navbar navbar-inverse navbar-fixed-top sidebar-wrapper' : 'navbar navbar-inverse navbar-fixed-top sidebar-wrapper-sm'" role="navigation">
+      <ul class="nav sidebar-nav">
+          <li class="sidebar-brand">
+              <a ng-if="main.textShow" class="sidebar-title">
+                Discover
+              </a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/whatsnew.png"/><a ng-if="main.textShow" href="#">What's New</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/genre.png"/><a href="#" ng-if="main.textShow">Genres</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a href="#" ng-if="main.textShow">Rooms</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/radio.png"/><a href="#" ng-if="main.textShow">Radio</a>
+          </li>
+      </ul>
+      <ul class="nav sidebar-nav sidebar-wrapper-2">
+      </ul>
+  </div>
+  <div id="page-content-wrapper">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-lg-offset-2" id="panel">
+          <ul>
+            <li ng-repeat="room in roomsIndex.all" ui-sref="roomsShow({ id: room._id })">
+              {{ room.name }}
+            </li>
+          </ul>
+
+          <button ui-sref="roomsNew">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

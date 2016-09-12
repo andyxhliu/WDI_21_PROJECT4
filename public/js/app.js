@@ -47628,6 +47628,31 @@ function Router($stateProvider, $urlRouterProvider) {
       url: '/register',
       templateUrl: '/templates/register.html',
       controller: "RegisterController as register"
+    })
+    .state("usersIndex", {
+      url: "/users",
+      templateUrl: "/templates/users/index.html",
+      controller: "UsersIndexController as usersIndex"
+    })
+    .state("roomsIndex", {
+      url: "/rooms",
+      templateUrl: "/templates/rooms/index.html",
+      controller: "RoomsIndexController as roomsIndex"
+    })
+    .state("roomsNew", {
+      url: "/rooms/new",
+      templateUrl: "/templates/rooms/new.html",
+      controller: "RoomsNewController as roomsNew"
+    })
+    .state("roomsShow", {
+      url: "/rooms/:id",
+      templateUrl: "/templates/rooms/show.html",
+      controller: "RoomsShowController as roomsShow"
+    })
+    .state("roomsEdit", {
+      url: "/rooms/:id/edit",
+      templateUrl: "/templates/rooms/edit.html",
+      controller: "RoomsEditController as roomsEdit"
     });
 
   $urlRouterProvider.otherwise("/login");
@@ -47668,6 +47693,18 @@ MainController.$inject = ["$auth", "$rootScope", "$state", "TokenService", "SOUN
 function MainController($auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY) {
 
   var self = this;
+  this.currentSound = null;
+  this.offset = 50;
+  this.genre = null;
+  this.textShow = true;
+
+  this.textMuted = function() {
+    if (this.textShow === false ) {
+      this.textShow = true;
+    } else if (this.textShow === true) {
+      this.textShow = false;
+    }
+  }
 
   this.tracks = [];
   
@@ -47696,6 +47733,7 @@ function MainController($auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY)
 
   $rootScope.$on("loggedIn", function() {
     self.currentUser = TokenService.decodeToken();
+    self.playSomeSound();
   });
 
   this.logout = function() {
@@ -47704,17 +47742,25 @@ function MainController($auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY)
     $state.go("login");
   }
 
-  this.playSomeSound = function(genre) {
+  this.randomSelection = function() {
+    self.offset = Math.floor(Math.random()*1000);
+    console.log(self.offset);
+    self.playSomeSound();
+  }
+
+  this.playSomeSound = function() {
     SC.initialize({
       client_id: "057f6e8bbc48cc7f8ef8520b83444560" 
     });
     SC.get('/tracks', {
-      genres: genre,
+      order: 'hotness',
+      offset: self.offset,
+      genres: self.genre,
+      limit: 20,
       bpm: {
         from: 100
       }
     }, function(tracks) {
-      console.log(tracks);
       $rootScope.$applyAsync(function() {
         self.tracks = tracks.map(function(track) {
           track.stream_url += "?client_id=" + SOUNDCLOUD_KEY;
@@ -47722,6 +47768,10 @@ function MainController($auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY)
         });
       });
     });
+  }
+
+  this.inputSound = function(url) {
+    this.currentSound = url;
   }
 
 }
@@ -47794,6 +47844,35 @@ function errSrc() {
 //   }
 // }
 angular
+  .module("OneApp")
+  .factory("Room", Room);
+
+// Director.$inject = ["$resource", "formData"];
+// function Director($resource, formData) {
+//   return $resource('/api/directors/:id', { id: '@_id' },  {
+//     update: {
+//       method: "PUT",
+//       headers: { 'Content-Type': undefined },
+//       transformRequest: formData.transform
+//     },
+//     save: {
+//       method: "POST",
+//       headers: { 'Content-Type': undefined },
+//       transformRequest: formData.transform
+//     }
+//   });
+// }
+
+
+Room.$inject = ["$resource"];
+function Room($resource) {
+  return $resource('/rooms/:id', { id: '@_id' },  {
+    update: {
+      method: "PUT"
+    }
+  });
+}
+angular
   .module('OneApp')
   .factory('User', User);
 
@@ -47813,7 +47892,7 @@ User.$inject = ["$resource"];
 //     }
 //   });
 // }
-function User($resource, formData) {
+function User($resource) {
   return $resource('/users', { id: '@_id' }, {
     update: { 
       method: "PUT"
@@ -47876,4 +47955,64 @@ function TokenService($window, jwtHelper) {
     var token = this.getToken();
     return token ? jwtHelper.decodeToken(token) : null;
   }
+}
+angular
+  .module('OneApp')
+  .controller("RoomsEditController", RoomsEditController);
+
+RoomsEditController.$inject = ["Room", "$state", "User"];
+function RoomsEditController(Room, $state, User) {
+  this.selected = Room.get($state.params);
+  this.users = User.query();
+
+  this.save = function() {
+    this.selected.$update(function() {
+      $state.go('roomsShow', $state.params);
+    });
+  }
+}
+angular
+  .module('OneApp')
+  .controller("RoomsIndexController", RoomsIndexController);
+
+RoomsIndexController.$inject = ["Room"];
+function RoomsIndexController(Room) {
+  this.all = Room.query();
+}
+angular
+  .module('OneApp')
+  .controller("RoomsNewController", RoomsNewController);
+
+RoomsNewController.$inject = ["Room", "$state", "User"];
+function RoomsNewController(Room, $state, User) {
+  this.new = {};
+  this.users = User.query();
+
+  this.create = function() {
+    Room.save(this.new, function() {
+      $state.go('roomsIndex');
+    });
+  }
+}
+angular
+  .module('OneApp')
+  .controller("RoomsShowController", RoomsShowController);
+
+RoomsShowController.$inject = ["Room", "$state"];
+function RoomsShowController(Room, $state) {
+  this.selected = Room.get($state.params);
+
+  this.delete = function() {
+    this.selected.$remove(function() {
+      $state.go("roomsIndex");
+    });
+  }
+}
+angular
+  .module('OneApp')
+  .controller("UsersIndexController", UsersIndexController);
+
+UsersIndexController.$inject = ["User"];
+function UsersIndexController(User) {
+  this.all = User.query();
 }

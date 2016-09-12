@@ -2,8 +2,11 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 var secret = require('./tokens').secret;
+var upload = require('./upload');
 
+var usersController = require('../controllers/users');
 var oauthController = require('../controllers/oauth');
+var roomsController = require('../controllers/rooms');
 var authController = require('../controllers/auth');
 
 function secureRoute(req, res, next) {
@@ -25,6 +28,17 @@ router.post('/oauth/github', oauthController.github);
 router.post('/login', authController.login);
 router.post('/register', authController.register);
 
+router.route('/users')
+  .get(usersController.index);
+
+router.route('/rooms')
+  .get(roomsController.index)
+  .post(secureRoute, roomsController.create);
+
+router.route('/rooms/:id')
+  .get(roomsController.show)
+  .put(secureRoute, roomsController.update)
+  .delete(secureRoute, roomsController.delete);
 
 module.exports = router;
 
