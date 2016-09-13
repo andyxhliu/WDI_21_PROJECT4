@@ -47689,9 +47689,9 @@ angular
   .module('OneApp')
   .controller("MainController", MainController);
 
-MainController.$inject = ["$auth", "$rootScope", "$state", "TokenService", "SOUNDCLOUD_KEY", "Room", "User"];
-function MainController($auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY, Room, User) {
-
+MainController.$inject = ["$window", "$auth", "$rootScope", "$state", "TokenService", "SOUNDCLOUD_KEY", "Room", "User"];
+function MainController($window, $auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY, Room, User) {
+  var socket = $window.io();
   var self = this;
   this.currentSound = null;
   this.allRooms = Room.query();
@@ -47789,6 +47789,8 @@ function MainController($auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY,
   this.inputSound = function(url) {
     this.currentSound = url;
   }
+
+
 
 }
 angular
@@ -47890,12 +47892,14 @@ angular
 //   });
 // }
 
-
 Room.$inject = ["$resource"];
 function Room($resource) {
   return $resource('/rooms/:id', { id: '@_id' },  {
     update: {
       method: "PUT"
+    },
+    save: {
+      method: "POST"
     }
   });
 }
@@ -48040,6 +48044,119 @@ function MessagesController($rootScope, socket, Message) {
 }
 angular
   .module('OneApp')
+  .controller("RoomsEditController", RoomsEditController);
+
+RoomsEditController.$inject = ["Room", "$state", "User"];
+function RoomsEditController(Room, $state, User) {
+  this.selected = Room.get($state.params);
+  this.users = User.query();
+
+  this.save = function() {
+    this.selected.$update(function() {
+      $state.go('roomsShow', $state.params);
+    });
+  }
+}
+angular
+  .module('OneApp')
+  .controller("RoomsIndexController", RoomsIndexController);
+
+RoomsIndexController.$inject = ["Room", "$window", "$rootScope"];
+function RoomsIndexController(Room, $window, $rootScope) {
+  var socket = $window.io();
+  var self = this;
+  this.all = Room.query();
+
+  // this.createRoom = function(room) {
+  //   socket.emit("createRoom", room);
+  //   console.log(room);
+  // };
+
+  // socket.on('message', function(message) {
+  //   $rootScope.$evalAsync(function() {
+  //     self.all.push(message);
+  //   });
+  // });
+
+  // socket.on('createRoom', function(room) {
+  //   console.log(room);
+  // });
+
+}
+angular
+  .module('OneApp')
+  .controller("RoomsNewController", RoomsNewController);
+
+RoomsNewController.$inject = ["Room", "$state", "User"];
+function RoomsNewController(Room, $state, User) {
+  this.new = null;
+  this.users = User.query();
+
+  this.create = function() {
+    console.log("hello");
+    console.log(this.new);
+    console.log(Room.save());
+    Room.save(this.new, function() {
+      console.log("in save");
+      $state.go('roomsIndex');
+    });
+  }
+}
+angular
+  .module('OneApp')
+  .controller("RoomsShowController", RoomsShowController);
+
+RoomsShowController.$inject = ["Room", "$state", "$window", "$rootScope", "Message"];
+function RoomsShowController(Room, $state, $window, $rootScope, Message) {
+  this.selected = Room.get($state.params);
+
+  this.delete = function() {
+    this.selected.$remove(function() {
+      $state.go("roomsIndex");
+    });
+  }
+
+  var socket = $window.io();
+  // var socket = $window.io("http://localhost:3000"); <--If we were running it for more server
+  var self = this;
+
+  this.message = null;
+
+  // this.notification = null;
+
+
+  this.all = [];
+
+  this.sendMessage = function() {
+    // socket.emit("message", this.message);
+    socket.emit('sendchat', this.message);
+    this.message = null;
+  };
+
+  ///Invite User
+  this.inviteUser = function(user, room) {
+    socket.emit('inviteUser', {user: user, room: room});
+  }
+
+  //update chat
+  socket.on('updatechat', function (username, data) {
+    var message = username + ": " + data;
+    $rootScope.$evalAsync(function() {
+      self.all.push(message);
+    });
+  });
+
+  //Message
+  socket.on('message', function(message) {
+    $rootScope.$evalAsync(function() {
+      self.all.push(message);
+    });
+  });
+
+
+}
+angular
+  .module('OneApp')
   .controller("UsersIndexController", UsersIndexController);
 
 UsersIndexController.$inject = ["User"];
@@ -48070,78 +48187,4 @@ function UsersIndexController(User) {
       });
     });
   });
-}
-angular
-  .module('OneApp')
-  .controller("RoomsEditController", RoomsEditController);
-
-RoomsEditController.$inject = ["Room", "$state", "User"];
-function RoomsEditController(Room, $state, User) {
-  this.selected = Room.get($state.params);
-  this.users = User.query();
-
-  this.save = function() {
-    this.selected.$update(function() {
-      $state.go('roomsShow', $state.params);
-    });
-  }
-}
-angular
-  .module('OneApp')
-  .controller("RoomsIndexController", RoomsIndexController);
-
-RoomsIndexController.$inject = ["Room"];
-function RoomsIndexController(Room) {
-  this.all = Room.query();
-}
-angular
-  .module('OneApp')
-  .controller("RoomsNewController", RoomsNewController);
-
-RoomsNewController.$inject = ["Room", "$state", "User"];
-function RoomsNewController(Room, $state, User) {
-  this.new = {};
-  this.users = User.query();
-
-  this.create = function() {
-    Room.save(this.new, function() {
-      $state.go('roomsIndex');
-    });
-  }
-}
-angular
-  .module('OneApp')
-  .controller("RoomsShowController", RoomsShowController);
-
-RoomsShowController.$inject = ["Room", "$state", "$window", "$rootScope", "Message"];
-function RoomsShowController(Room, $state, $window, $rootScope, Message) {
-  this.selected = Room.get($state.params);
-
-  this.delete = function() {
-    this.selected.$remove(function() {
-      $state.go("roomsIndex");
-    });
-  }
-
-  var socket = $window.io();
-  // var socket = $window.io("http://localhost:3000"); <--If we were running it for more server
-  var self = this;
-
-  this.message = null;
-
-  this.all = [];
-
-  this.sendMessage = function() {
-    console.log("hello");
-    socket.emit("message", this.message);
-    this.message = null;
-  };
-
-  socket.on('message', function(message) {
-    $rootScope.$evalAsync(function() {
-      self.all.push(message);
-    });
-  });
-
-
 }

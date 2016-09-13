@@ -23,7 +23,13 @@
       </ul>
       <ul class="nav sidebar-nav sidebar-wrapper-2" id="user-all">
         <h5>Explore Users</h5>
-        <li ng-repeat="user in main.allUsers track by $index">{{user.name}}</li>
+        <li ng-repeat="user in main.allUsers track by $index">
+          {{user.name}}
+          <button class="btn btn-info" ng-click="roomsShow.inviteUser(user, roomsShow.selected)">Invite</button>
+        </li>
+<!--         <div class="notification">
+          {{notification}}
+        </div> -->
       </ul>
   </div>
 

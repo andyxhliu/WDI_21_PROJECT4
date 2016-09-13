@@ -37,6 +37,16 @@ function roomCreate(req, res) {
     });
 }
 
+function directorCreate(req, res) {
+  Director.create(req.body)
+    .then(function(director) {
+      res.status(201).json(director);
+    })
+    .catch(function(err) {
+      res.status(500).json(err);
+    });
+}
+
 function roomUpdate(req, res) {
   Room.findById(req.params.id)
     .then(function(room) {
