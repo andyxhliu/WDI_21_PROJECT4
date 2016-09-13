@@ -47655,7 +47655,7 @@ function Router($stateProvider, $urlRouterProvider) {
       controller: "RoomsEditController as roomsEdit"
     });
 
-  $urlRouterProvider.otherwise("/login");
+  $urlRouterProvider.otherwise("/");
 }
 angular
   .module("OneApp")
@@ -47689,14 +47689,17 @@ angular
   .module('OneApp')
   .controller("MainController", MainController);
 
-MainController.$inject = ["$auth", "$rootScope", "$state", "TokenService", "SOUNDCLOUD_KEY"];
-function MainController($auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY) {
+MainController.$inject = ["$auth", "$rootScope", "$state", "TokenService", "SOUNDCLOUD_KEY", "Room", "User"];
+function MainController($auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY, Room, User) {
 
   var self = this;
   this.currentSound = null;
+  this.allRooms = Room.query();
+  this.currentUserRooms = null;
   this.offset = 50;
   this.genre = null;
   this.textShow = true;
+  this.allUsers = User.query();
 
   this.textMuted = function() {
     if (this.textShow === false ) {
@@ -47704,6 +47707,19 @@ function MainController($auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY)
     } else if (this.textShow === true) {
       this.textShow = false;
     }
+  }
+
+  this.getUserRooms = function() {
+    self.currentUser = TokenService.decodeToken();
+    console.log(this.allRooms);
+    this.allRooms.forEach(function(room) {
+      room.users.forEach(function(user) {
+        console.log(user, self.currentUser._id);
+        if (user === self.currentUser._id) {
+          console.log("hello");
+        }
+      })
+    });
   }
 
   this.tracks = [];
@@ -47844,6 +47860,17 @@ function errSrc() {
 //   }
 // }
 angular
+  .module('OneApp')
+  .factory('Message', Message);
+
+Message.$inject = ["$resource"];
+function Message($resource) {
+  return $resource('/messages/:id', { id: '@_id' }, {
+    update: { method: "PUT" },
+    query: { method: "GET", isArray: true, url: '/messages/:roomId' }
+  });
+}
+angular
   .module("OneApp")
   .factory("Room", Room);
 
@@ -47958,6 +47985,94 @@ function TokenService($window, jwtHelper) {
 }
 angular
   .module('OneApp')
+  .controller("MessagesController", MessagesController);
+
+MessagesController.$inject = ["$rootScope", "socket", "Message"];
+function MessagesController($rootScope, socket, Message) {
+
+  // var self = this;
+
+  // this.connected = false;
+  // this.currentRoom = null;
+  // this.new = null;
+  // this.all = [];
+
+  // this.delete = function(message) {
+  //   socket.emit("delete", message);
+  // }
+
+  // socket.on("delete", function(deletedMessage) {
+  //   $rootScope.$applyAsync(function() {
+  //     var index = self.all.findIndex(function(message) {
+  //       return message._id === deletedMessage._id;
+  //     });
+
+  //     if(index > -1) {
+  //       self.all.splice(index, 1);
+  //     }
+  //   });
+  // });
+
+  // $rootScope.$on("currentRoom", function(event, room) {
+  //   if(room) {
+  //     self.currentRoom = room;
+  //     Message.query({ roomId: room._id }, function(res) {
+  //       self.all = res;
+  //     });
+  //   }
+  // });
+
+  // this.send = function(event) {
+  //   if(event.keyCode === 13 && !event.shiftKey) {
+  //     socket.emit("message", { content: this.new, room: self.currentRoom });
+  //     this.new = null;
+  //   }
+  // }
+
+  // socket.on("message", function(data) {
+  //   if(data.room._id === self.currentRoom._id) {
+  //     $rootScope.$applyAsync(function() {
+  //       var message = new Message(data);
+  //       self.all.push(message);
+  //     });
+  //   }
+  // });
+}
+angular
+  .module('OneApp')
+  .controller("UsersIndexController", UsersIndexController);
+
+UsersIndexController.$inject = ["User"];
+function UsersIndexController(User) {
+  this.all = User.query();
+  var self = this;
+
+  socket.on('active', function(loggedInUser) {
+    $rootScope.$applyAsync(function() {
+      self.all.map(function(user) {
+        if(loggedInUser._id === user._id) {
+          user.active = true;
+        }
+
+        return user;
+      });
+    });
+  });
+
+  socket.on('away', function(loggedInUser) {
+    $rootScope.$applyAsync(function() {
+      self.all.map(function(user) {
+        if(loggedInUser._id === user._id) {
+          user.active = false;
+        }
+
+        return user;
+      });
+    });
+  });
+}
+angular
+  .module('OneApp')
   .controller("RoomsEditController", RoomsEditController);
 
 RoomsEditController.$inject = ["Room", "$state", "User"];
@@ -47998,8 +48113,8 @@ angular
   .module('OneApp')
   .controller("RoomsShowController", RoomsShowController);
 
-RoomsShowController.$inject = ["Room", "$state", "$window", "$rootScope"];
-function RoomsShowController(Room, $state, $window, $rootScope) {
+RoomsShowController.$inject = ["Room", "$state", "$window", "$rootScope", "Message"];
+function RoomsShowController(Room, $state, $window, $rootScope, Message) {
   this.selected = Room.get($state.params);
 
   this.delete = function() {
@@ -48022,21 +48137,11 @@ function RoomsShowController(Room, $state, $window, $rootScope) {
     this.message = null;
   };
 
-  this.sayHello = function() {
-    console.log("Hello");
-  }
-
   socket.on('message', function(message) {
     $rootScope.$evalAsync(function() {
       self.all.push(message);
     });
   });
-}
-angular
-  .module('OneApp')
-  .controller("UsersIndexController", UsersIndexController);
 
-UsersIndexController.$inject = ["User"];
-function UsersIndexController(User) {
-  this.all = User.query();
+
 }

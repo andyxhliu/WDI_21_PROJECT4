@@ -9,19 +9,21 @@
               </a>
           </li>
           <li>
-              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/whatsnew.png"/><a ng-if="main.textShow" href="#">What's New</a>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/whatsnew.png"/><a ui-sref="main" ng-if="main.textShow" href="#">What's New</a>
           </li>
           <li>
               <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/genre.png"/><a href="#" ng-if="main.textShow">Genres</a>
           </li>
           <li>
-              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a href="#" ng-if="main.textShow">Rooms</a>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a ui-sref="roomsIndex" ng-if="main.textShow">Rooms</a>
           </li>
           <li>
               <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/radio.png"/><a href="#" ng-if="main.textShow">Radio</a>
           </li>
       </ul>
-      <ul class="nav sidebar-nav sidebar-wrapper-2">
+      <ul class="nav sidebar-nav sidebar-wrapper-2" id="user-all">
+        <h5>Explore Users</h5>
+        <li ng-repeat="user in main.allUsers track by $index">{{user.name}}</li>
       </ul>
   </div>
 
@@ -41,9 +43,9 @@
     <ul>
       <li ng-repeat="message in roomsShow.all track by $index">{{message}}</li>
     </ul>
-    <button ng-click="roomsShow.sendMessage()"></button>
+<!--     <button ng-click="roomsShow.sendMessage()"></button> -->
 
-    <form>
+    <form ng-submit="roomsShow.sendMessage()">
       <input type="text" ng-model="roomsShow.message">
       <button type="submit">Send</button>
     </form>

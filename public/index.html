@@ -9,7 +9,7 @@
 </head>
 <body ng-controller="MainController as main">
   <nav class="navbar header-basic-light">
-    <div ng-class="main.textShow ? 'logo' : 'logo-hide'">
+    <div ui-sref="main" ng-class="main.textShow ? 'logo' : 'logo-hide'">
       <img ng-if="main.textShow" id="logo-img" src="/images/logo.png"/>
       <h1 id="logo-text">One</h1>
     </div>

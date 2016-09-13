@@ -9,6 +9,7 @@ var userSchema = new mongoose.Schema({
   facebookId: String,
   githubId: String,
   passwordHash: String,
+  messages: [{ type: mongoose.Schema.ObjectId, ref: 'Message'}],
   rooms: [{ type: mongoose.Schema.ObjectId, ref: 'Room'}]
 });
 

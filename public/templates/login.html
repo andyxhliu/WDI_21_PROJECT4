@@ -1,23 +1,58 @@
-<h1>Login</h1>
+<div id="wrapper">
+  <div class="overlay"></div>
 
-<h3>Login with Email</h3>
+  <div ng-class="main.textShow ? 'navbar navbar-inverse navbar-fixed-top sidebar-wrapper' : 'navbar navbar-inverse navbar-fixed-top sidebar-wrapper-sm'" role="navigation">
+      <ul class="nav sidebar-nav">
+          <li class="sidebar-brand">
+              <a ng-if="main.textShow" class="sidebar-title">
+                Discover
+              </a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/whatsnew.png"/><a ui-sref="main" ng-if="main.textShow" href="#">What's New</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/genre.png"/><a href="#" ng-if="main.textShow">Genres</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a ui-sref="roomsIndex" ng-if="main.textShow">Rooms</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/radio.png"/><a href="#" ng-if="main.textShow">Radio</a>
+          </li>
+      </ul>
+      <ul class="nav sidebar-nav sidebar-wrapper-2">
+      </ul>
+  </div>
+  <div id="page-content-wrapper">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-lg-offset-2" id="panel">
+          <h1>Login</h1>
 
-<form ng-submit="login.submit()">
-  <input type="text" name="email" ng-model="login.credentials.email">
-  <input type="password" name="password" ng-model="login.credentials.password">
+<!--           <h3>Login with Email</h3>
 
-  <button>Submit</button>
-</form>
+          <form ng-submit="login.submit()">
+            <input type="text" name="email" ng-model="login.credentials.email">
+            <input type="password" name="password" ng-model="login.credentials.password">
+
+            <button>Submit</button>
+          </form> -->
 
 
 
-<div id="login" class="row">
-  <div class="col-md-6 offset-md-3">
-    <div class="card card-block text-xs-center">
-      <h4 class="card-title">Welcome to OneApp</h4>
-      <p class="card-text">Sign in</p>
-      <button class="btn btn-primary" ng-click="login.authenticate('facebook')">Facebook</button>
-      <button class="btn btn-primary" ng-click="login.authenticate('github')">Github</button>
+          <div id="login" class="row">
+            <div class="col-md-6 offset-md-3">
+              <div class="card card-block text-xs-center">
+                <h4 class="card-title">Welcome to OneApp</h4>
+                <p class="card-text">Sign in</p>
+                <button class="btn btn-primary" ng-click="login.authenticate('facebook')">Facebook</button>
+                <button class="btn btn-primary" ng-click="login.authenticate('github')">Github</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

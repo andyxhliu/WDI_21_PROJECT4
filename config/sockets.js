@@ -1,5 +1,6 @@
 var socketioJwt = require('socketio-jwt');
 var _ = require('underscore');
+var secret = require('./tokens').secret;
 
 module.exports = function(server) {
   var io = require('socket.io').listen(server);
@@ -14,4 +15,5 @@ module.exports = function(server) {
       // socket.broadcast.emit('message', message); //Sending message to everyone else
     });
   }); 
+
 }

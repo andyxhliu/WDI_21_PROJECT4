@@ -8,6 +8,8 @@ var usersController = require('../controllers/users');
 var oauthController = require('../controllers/oauth');
 var roomsController = require('../controllers/rooms');
 var authController = require('../controllers/auth');
+var messagesController = require('../controllers/messages');
+
 
 function secureRoute(req, res, next) {
   if(!req.headers.authorization) return res.status(401).json({ message: "Unauthorized" });
@@ -39,6 +41,12 @@ router.route('/rooms/:id')
   .get(roomsController.show)
   .put(secureRoute, roomsController.update)
   .delete(secureRoute, roomsController.delete);
+
+router.get('/messages/:roomId', secureRoute, messagesController.index);
+
+router.route('/messages/:id')
+  .all(secureRoute)
+  .delete(messagesController.delete);
 
 module.exports = router;
 

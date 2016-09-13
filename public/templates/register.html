@@ -1,12 +1,47 @@
-<h1>Register</h1>
+<div id="wrapper">
+  <div class="overlay"></div>
 
-<form ng-submit="register.submit()">
-  <input type="text" name="name" ng-model="register.user.name">
-  <input type="text" name="email" ng-model="register.user.email">
-  <input type="password" name="password" ng-model="register.user.password">
-  <input type="password" name="passwordConfirmation" ng-model="register.user.passwordConfirmation">
+  <div ng-class="main.textShow ? 'navbar navbar-inverse navbar-fixed-top sidebar-wrapper' : 'navbar navbar-inverse navbar-fixed-top sidebar-wrapper-sm'" role="navigation">
+      <ul class="nav sidebar-nav">
+          <li class="sidebar-brand">
+              <a ng-if="main.textShow" class="sidebar-title">
+                Discover
+              </a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/whatsnew.png"/><a ui-sref="main" ng-if="main.textShow" href="#">What's New</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/genre.png"/><a href="#" ng-if="main.textShow">Genres</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a ui-sref="roomsIndex" ng-if="main.textShow">Rooms</a>
+          </li>
+          <li>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/radio.png"/><a href="#" ng-if="main.textShow">Radio</a>
+          </li>
+      </ul>
+      <ul class="nav sidebar-nav sidebar-wrapper-2">
+      </ul>
+  </div>
+  <div id="page-content-wrapper">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-lg-offset-2" id="panel">
+          <h1>Register</h1>
 
-  <button>Submit</button>
-</form>
+<!--           <form ng-submit="register.submit()">
+            <input type="text" name="name" ng-model="register.user.name">
+            <input type="text" name="email" ng-model="register.user.email">
+            <input type="password" name="password" ng-model="register.user.password">
+            <input type="password" name="passwordConfirmation" ng-model="register.user.passwordConfirmation">
 
-<a ui-sref="login">Or login</a>
+            <button>Submit</button>
+          </form> -->
+
+          <a ui-sref="login">Or login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

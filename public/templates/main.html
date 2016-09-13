@@ -1,8 +1,3 @@
-
-<!-- <button ng-click="main.randomSelection()">Random</button> -->
-
-<!-- <audio andy-audio ng-src="{{ main.currentSound }}" autoplay controls></audio>
- -->
 <div id="wrapper">
   <div class="overlay"></div>
 
@@ -14,19 +9,21 @@
               </a>
           </li>
           <li>
-              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/whatsnew.png"/><a ng-if="main.textShow" href="#">What's New</a>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/whatsnew.png"/><a ui-sref="main" ng-if="main.textShow" href="#">What's New</a>
           </li>
           <li>
               <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/genre.png"/><a href="#" ng-if="main.textShow">Genres</a>
           </li>
           <li>
-              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a href="#" ng-if="main.textShow">Rooms</a>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a ui-sref="roomsIndex" ng-if="main.textShow">Rooms</a>
           </li>
           <li>
               <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/radio.png"/><a href="#" ng-if="main.textShow">Radio</a>
           </li>
       </ul>
-      <ul class="nav sidebar-nav sidebar-wrapper-2">
+      <ul class="nav sidebar-nav sidebar-wrapper-2" id="user-all">
+        <h5>Explore Users</h5>
+        <li ng-repeat="user in main.allUsers track by $index">{{user.name}}</li>
       </ul>
   </div>
   <div id="page-content-wrapper">
@@ -35,6 +32,7 @@
             <div class="col-lg-6 col-lg-offset-2" id="panel">
               <h1>Discover</h1>
               <button ng-click="main.playSomeSound(hiphop)">Start</button>
+              <button ng-click="main.randomSelection()">Random</button>
               <div class="row">
                 <div ng-repeat="track in main.tracks track by $index" ng-if="track.artwork_url !== null" class="col-md-9 grid" id="grid-single">
                   <img ng-click="main.inputSound(track.stream_url)" class="grid-img img-rounded" ng-src="{{ track.artwork_url }}" err-src="http://www.centurymedia.com/media/news/large/635877535374959334.jpg">
@@ -44,6 +42,7 @@
                     <span class="song-duration">Duration</span>
                   </div>
                 </div>
+                <audio andy-audio ng-src="{{ main.currentSound }}" autoplay controls></audio>
               </div>
             </div>
         </div>
@@ -55,8 +54,6 @@
     <h6>Your Group</h6>
     <ul class="nav nav-tabs nav-stacked">
       <li><a href='#'>Another Link 1</a></li>
-      <li><a href='#'>Another Link 2</a></li>
-      <li><a href='#'>Another Link 3</a></li>
     </ul>
   </div>
 </div>

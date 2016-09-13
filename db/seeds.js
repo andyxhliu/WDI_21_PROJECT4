@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var User = require('../models/user');
 var Room = require('../models/room');
+var Message = require('../models/message');
 var bluebird = require('bluebird');
 
 var databaseUri = require('../config/db')(process.env.NODE_ENV || "development");
@@ -11,11 +12,11 @@ User.collection.drop();
 Room.collection.drop();
 
 User.create([{
-  name: "Paul Verhoeven",
+  name: "Mickyginger",
   email: "aaa@aaa.com",
   image: "Test"
 }, {
-  name: "Uwe Boll",
+  name: "Mick",
   email: "bbb@bbb.com",
   image: "Test"
 }, {
@@ -29,16 +30,26 @@ User.create([{
 }], function(err, users) {
   if(!err) console.log("Users created!");
   Room.create([{
-    name: "Robocop",
+    name: "True music",
     image: "Test",
     users: [users[0],users[1], users[2], users[3]]
   },  {
-    name: "Bloodrayne",
+    name: "Music fantasy",
     image: "Test",
     users: [users[0],users[1], users[2], users[3]]
   }], function(err, rooms) {
     if(!err) console.log("Rooms created!");
-    mongoose.connection.close();
+    Message.create([{
+      content: "Hello World!",
+      room: rooms[0],
+      user: users[0]
+    }, {
+      content: "Hello World Again!",
+      room: rooms[0],
+      user: users[0]
+    }], function(err, messages) {
+      if(!err) console.log("Messages created!");
+      mongoose.connection.close();
+    });
   });
-
 });

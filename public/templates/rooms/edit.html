@@ -9,19 +9,21 @@
               </a>
           </li>
           <li>
-              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/whatsnew.png"/><a ng-if="main.textShow" href="#">What's New</a>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/whatsnew.png"/><a ui-sref="main" ng-if="main.textShow" href="#">What's New</a>
           </li>
           <li>
               <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/genre.png"/><a href="#" ng-if="main.textShow">Genres</a>
           </li>
           <li>
-              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a href="#" ng-if="main.textShow">Rooms</a>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a ui-sref="roomsIndex" ng-if="main.textShow">Rooms</a>
           </li>
           <li>
               <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/radio.png"/><a href="#" ng-if="main.textShow">Radio</a>
           </li>
       </ul>
-      <ul class="nav sidebar-nav sidebar-wrapper-2">
+      <ul class="nav sidebar-nav sidebar-wrapper-2" id="user-all">
+        <h5>Explore Users</h5>
+        <li ng-repeat="user in main.allUsers track by $index">{{user.name}}</li>
       </ul>
   </div>
   <div id="page-content-wrapper">
