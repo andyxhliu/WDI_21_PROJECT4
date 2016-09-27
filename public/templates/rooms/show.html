@@ -15,21 +15,23 @@
               <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/genre.png"/><a href="#" ng-if="main.textShow">Genres</a>
           </li>
           <li>
-              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a ui-sref="roomsIndex" ng-if="main.textShow">Rooms</a>
+              <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/group.png"/><a ui-sref="roomsIndex" ng-click="roomsShow.leaveRoom(roomsShow.currentUser, roomsShow.selected)" ng-if="main.textShow">Rooms</a>
           </li>
           <li>
               <img ng-class="main.textShow ? 'icon-side' : 'icon-side-lg'" src="../images/radio.png"/><a href="#" ng-if="main.textShow">Radio</a>
           </li>
       </ul>
       <ul class="nav sidebar-nav sidebar-wrapper-2" id="user-all">
-        <h5>Explore Users</h5>
+<!--         <h5>Explore Users</h5>
         <li ng-repeat="user in main.allUsers track by $index">
           {{user.name}}
           <button class="btn btn-info" ng-click="roomsShow.inviteUser(user, roomsShow.selected)">Invite</button>
-        </li>
-<!--         <div class="notification">
-          {{notification}}
-        </div> -->
+        </li> -->
+<!--         <h5>Explore Rooms</h5>
+        <li ng-repeat="room in main.allRooms track by $index">
+          {{room.name}}
+          <button class="btn btn-info" ng-click="[roomsShow.inviteUser(roomsShow.currentUser, room), roomsShow.switchRoom(room)]">Join</button>
+        </li> -->
       </ul>
   </div>
 
@@ -37,17 +39,19 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-6 col-lg-offset-2" id="panel">
-          <h1>{{ roomsShow.selected.name }}</h1>
-          <img ng-src="{{ roomsShow.selected.image }}">
-          <button ui-sref="roomsEdit({ id: roomsShow.selected._id })">Edit</button>
+          <h1>{{ roomsShow.title }}</h1>
+          <!-- <img ng-src="{{ roomsShow.selected.image }}"> -->
+          <!-- <button ui-sref="roomsEdit({ id: roomsShow.selected._id })">Edit</button> -->
         </div>
       </div>
     </div>
   </div>
 
   <div class='col-lg-2 right-side-bar' id="chat-area">
+    <button ng-click="roomsShow.joinRoom(roomsShow.currentUser, roomsShow.selected)">Join Room</button>
+    <button ui-sref="roomsIndex" ng-click="roomsShow.leaveRoom(roomsShow.currentUser, roomsShow.selected)">Leave Room</button>
     <ul>
-      <li ng-repeat="message in roomsShow.all track by $index">{{message}}</li>
+      <li ng-repeat="message in roomsShow.all track by $index">{{message.user.name}}: {{message.content}}</li>
     </ul>
 <!--     <button ng-click="roomsShow.sendMessage()"></button> -->
 

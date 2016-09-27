@@ -1,6 +1,7 @@
 var socketioJwt = require('socketio-jwt');
 var _ = require('underscore');
 var secret = require('./tokens').secret;
+var Message = require('../models/message');
 
 module.exports = function(server) {
   var usernames = {};
@@ -22,7 +23,8 @@ module.exports = function(server) {
     //   // socket.broadcast.emit('message', message); //Sending message to everyone else
     // });
 
-    socket.on('inviteUser', function(data) {
+    socket.on('joinRoom', function(data) {
+      console.log(data);
       // io.sockets.emit('inviteUser', data);
       socket.userId = data.user._id;
       socket.userName = data.user.name;
@@ -31,25 +33,52 @@ module.exports = function(server) {
       // usernames[username] = data.user.name;
       socket.join(data.room._id);
       socket.emit('updatechat', 'SERVER', 'you have joined ' + data.room.name);
-      socket.broadcast.to('data.room._id').emit('updatechat', 'SERVER', data.user.name + ' has connected to this room');
+      socket.broadcast.to(data.room._id).emit('updatechat', 'SERVER', data.user.name + ' has connected to this room');
+      socket.emit('updaterooms', data.room._id);
     })
 
     socket.on('sendchat', function (message) {
+      // console.log(socket.userName);
+      // console.log(message);
       io.sockets.in(socket.roomId).emit('updatechat', socket.userName, message);
     });
 
+    socket.on('message', function(data) {
+
+      return Message.create(data)
+        .then(function(message) {
+          console.log("in create message");
+          data._id = message._id;
+          data.content = message.content;
+
+          // io.sockets.emit('message', data);
+        });
+    });
+
+    socket.on('leaveRoom', function(data) {
+      socket.userId = data.user._id;
+      socket.userName = data.user.name;
+      socket.roomId = data.room._id;
+      socket.roomName = data.room.name;
+      socket.leave(data.room._id);
+      socket.broadcast.to(data.room._id).emit('updatechat', 'SERVER', data.user.name +' has left this room');
+      socket.emit('updaterooms', data.room._id);
+    })
+
     socket.on('switchRoom', function(newroom){
+      console.log('switchRoom', socket.roomId, 'socket.roomId');
+      console.log('newroom', newroom, 'newroom');
       // leave the current room (stored in session)
-      socket.leave(socket.room);
+      socket.leave(socket.roomId);
       // join new room, received as function parameter
       socket.join(newroom);
-      socket.emit('updatechat', 'SERVER', 'you have connected to '+ newroom);
+      // socket.emit('updatechat', 'SERVER', 'you have connected to '+ newroom);
       // sent message to OLD room
-      socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', socket.username+' has left this room');
+      socket.broadcast.to(socket.roomId).emit('updatechat', 'SERVER', socket.userName+' has left this room');
       // update socket session room title
-      socket.room = newroom;
-      socket.broadcast.to(newroom).emit('updatechat', 'SERVER', socket.username+' has joined this room');
-      socket.emit('updaterooms', rooms, newroom);
+      socket.roomId = newroom;
+      // socket.broadcast.to(newroom).emit('updatechat', 'SERVER', socket.userName+' has joined this room');
+      socket.emit('updaterooms', newroom);
     });
 
     // when the user disconnects.. perform this

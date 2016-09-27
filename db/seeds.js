@@ -10,6 +10,7 @@ mongoose.Promise = bluebird;
 
 User.collection.drop();
 Room.collection.drop();
+Message.collection.drop();
 
 User.create([{
   name: "Mickyginger",

@@ -42,7 +42,9 @@ router.route('/rooms/:id')
   .put(secureRoute, roomsController.update)
   .delete(secureRoute, roomsController.delete);
 
-router.get('/messages/:roomId', secureRoute, messagesController.index);
+router.route('/messages/:roomId')
+  .get(messagesController.index)
+  .post(messagesController.create);
 
 router.route('/messages/:id')
   .all(secureRoute)
