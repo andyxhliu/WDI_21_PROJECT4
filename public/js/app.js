@@ -47658,161 +47658,6 @@ function Router($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise("/");
 }
 angular
-  .module("OneApp")
-  .controller("LoginController", LoginController);
-
-LoginController.$inject = ["$auth", "$state", "$rootScope"];
-function LoginController($auth, $state, $rootScope) {
-
-  this.credentials = {};
-
-  this.authenticate = function(provider) {
-    $auth.authenticate(provider)
-      .then(function(res) {
-        $rootScope.$broadcast("loggedIn");
-        $state.go('main');
-      });
-  }
-
-  this.submit = function() {
-    console.log("hello");
-    $auth.login(this.credentials, {
-      url: "/login"
-    }).then(function(){
-      $rootScope.$broadcast("loggedIn");
-      $state.go('main');
-    })
-  }
-}
-
-angular
-  .module('OneApp')
-  .controller("MainController", MainController);
-
-MainController.$inject = ["$window", "$auth", "$rootScope", "$state", "TokenService", "SOUNDCLOUD_KEY", "Room", "User"];
-function MainController($window, $auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY, Room, User) {
-  var socket = $window.io();
-  var self = this;
-  this.currentSound = null;
-  this.allRooms = Room.query();
-  this.currentUserRooms = null;
-  this.offset = 50;
-  this.genre = null;
-  this.textShow = true;
-  this.allUsers = User.query();
-
-  this.textMuted = function() {
-    if (this.textShow === false ) {
-      this.textShow = true;
-    } else if (this.textShow === true) {
-      this.textShow = false;
-    }
-  }
-
-  this.getUserRooms = function() {
-    self.currentUser = TokenService.decodeToken();
-    console.log(this.allRooms);
-    this.allRooms.forEach(function(room) {
-      room.users.forEach(function(user) {
-        console.log(user, self.currentUser._id);
-        if (user === self.currentUser._id) {
-          console.log("hello");
-        }
-      })
-    });
-  }
-
-  this.tracks = [];
-  
-  this.currentUser = TokenService.decodeToken();
-  this.connected = false;
-
-  $rootScope.$on('connected', function() {
-    self.connected = true;
-  });
-
-  $rootScope.$on('disconnected', function() {
-    self.connected = false;
-  });
-
-  $rootScope.$on('unauthorized', function() {
-    $state.go("login");
-  });
-
-  $rootScope.$on('playing', function(event, time) {
-    console.log("audio is playing", time);
-  });
-
-  $rootScope.$on('paused', function(event, time) {
-    console.log("audio is paused", time);
-  });
-
-  $rootScope.$on("loggedIn", function() {
-    self.currentUser = TokenService.decodeToken();
-    self.playSomeSound();
-  });
-
-  this.logout = function() {
-    $auth.logout();
-    this.currentUser = null;
-    $state.go("login");
-  }
-
-  this.randomSelection = function() {
-    self.offset = Math.floor(Math.random()*1000);
-    console.log(self.offset);
-    self.playSomeSound();
-  }
-
-  this.playSomeSound = function() {
-    SC.initialize({
-      client_id: "057f6e8bbc48cc7f8ef8520b83444560" 
-    });
-    SC.get('/tracks', {
-      order: 'hotness',
-      offset: self.offset,
-      genres: self.genre,
-      limit: 20,
-      bpm: {
-        from: 100
-      }
-    }, function(tracks) {
-      $rootScope.$applyAsync(function() {
-        self.tracks = tracks.map(function(track) {
-          track.stream_url += "?client_id=" + SOUNDCLOUD_KEY;
-          return track;
-        });
-      });
-    });
-  }
-
-  this.inputSound = function(url) {
-    this.currentSound = url;
-  }
-
-
-
-}
-angular
-  .module("OneApp")
-  .controller("RegisterController", RegisterController);
-
-RegisterController.$inject = ["$auth", "$state", "$rootScope"];
-function RegisterController($auth, $state, $rootScope) {
-
-  this.user = {};
-
-  this.submit = function() {
-    $auth.signup(this.user, {
-      url: '/register',
-    })
-    .then(function(res){
-      $state.go("login");
-    })
-  }
-}
-
-angular
   .module('OneApp')
   .directive('andyAudio', andyAudio);
 
@@ -47988,6 +47833,161 @@ function TokenService($window, jwtHelper) {
   }
 }
 angular
+  .module("OneApp")
+  .controller("LoginController", LoginController);
+
+LoginController.$inject = ["$auth", "$state", "$rootScope"];
+function LoginController($auth, $state, $rootScope) {
+
+  this.credentials = {};
+
+  this.authenticate = function(provider) {
+    $auth.authenticate(provider)
+      .then(function(res) {
+        $rootScope.$broadcast("loggedIn");
+        $state.go('main');
+      });
+  }
+
+  this.submit = function() {
+    console.log("hello");
+    $auth.login(this.credentials, {
+      url: "/login"
+    }).then(function(){
+      $rootScope.$broadcast("loggedIn");
+      $state.go('main');
+    })
+  }
+}
+
+angular
+  .module('OneApp')
+  .controller("MainController", MainController);
+
+MainController.$inject = ["$window", "$auth", "$rootScope", "$state", "TokenService", "SOUNDCLOUD_KEY", "Room", "User"];
+function MainController($window, $auth, $rootScope, $state, TokenService, SOUNDCLOUD_KEY, Room, User) {
+  var socket = $window.io();
+  var self = this;
+  this.currentSound = null;
+  this.allRooms = Room.query();
+  this.currentUserRooms = null;
+  this.offset = 50;
+  this.genre = null;
+  this.textShow = true;
+  this.allUsers = User.query();
+
+  this.textMuted = function() {
+    if (this.textShow === false ) {
+      this.textShow = true;
+    } else if (this.textShow === true) {
+      this.textShow = false;
+    }
+  }
+
+  this.getUserRooms = function() {
+    self.currentUser = TokenService.decodeToken();
+    console.log(this.allRooms);
+    this.allRooms.forEach(function(room) {
+      room.users.forEach(function(user) {
+        console.log(user, self.currentUser._id);
+        if (user === self.currentUser._id) {
+          console.log("hello");
+        }
+      })
+    });
+  }
+
+  this.tracks = [];
+  
+  this.currentUser = TokenService.decodeToken();
+  this.connected = false;
+
+  $rootScope.$on('connected', function() {
+    self.connected = true;
+  });
+
+  $rootScope.$on('disconnected', function() {
+    self.connected = false;
+  });
+
+  $rootScope.$on('unauthorized', function() {
+    $state.go("login");
+  });
+
+  $rootScope.$on('playing', function(event, time) {
+    console.log("audio is playing", time);
+  });
+
+  $rootScope.$on('paused', function(event, time) {
+    console.log("audio is paused", time);
+  });
+
+  $rootScope.$on("loggedIn", function() {
+    self.currentUser = TokenService.decodeToken();
+    self.playSomeSound();
+  });
+
+  this.logout = function() {
+    $auth.logout();
+    this.currentUser = null;
+    $state.go("login");
+  }
+
+  this.randomSelection = function() {
+    self.offset = Math.floor(Math.random()*1000);
+    console.log(self.offset);
+    self.playSomeSound();
+  }
+
+  this.playSomeSound = function() {
+    SC.initialize({
+      client_id: "057f6e8bbc48cc7f8ef8520b83444560" 
+    });
+    SC.get('/tracks', {
+      order: 'hotness',
+      offset: self.offset,
+      genres: self.genre,
+      limit: 20,
+      bpm: {
+        from: 100
+      }
+    }, function(tracks) {
+      $rootScope.$applyAsync(function() {
+        self.tracks = tracks.map(function(track) {
+          track.stream_url += "?client_id=" + SOUNDCLOUD_KEY;
+          return track;
+        });
+      });
+    });
+  }
+
+  this.inputSound = function(url) {
+    this.currentSound = url;
+  }
+
+
+
+}
+angular
+  .module("OneApp")
+  .controller("RegisterController", RegisterController);
+
+RegisterController.$inject = ["$auth", "$state", "$rootScope"];
+function RegisterController($auth, $state, $rootScope) {
+
+  this.user = {};
+
+  this.submit = function() {
+    $auth.signup(this.user, {
+      url: '/register',
+    })
+    .then(function(res){
+      $state.go("login");
+    })
+  }
+}
+
+angular
   .module('OneApp')
   .controller("MessagesController", MessagesController);
 
@@ -48044,6 +48044,39 @@ function MessagesController($rootScope, socket, Message) {
 }
 angular
   .module('OneApp')
+  .controller("UsersIndexController", UsersIndexController);
+
+UsersIndexController.$inject = ["User"];
+function UsersIndexController(User) {
+  this.all = User.query();
+  var self = this;
+
+  socket.on('active', function(loggedInUser) {
+    $rootScope.$applyAsync(function() {
+      self.all.map(function(user) {
+        if(loggedInUser._id === user._id) {
+          user.active = true;
+        }
+
+        return user;
+      });
+    });
+  });
+
+  socket.on('away', function(loggedInUser) {
+    $rootScope.$applyAsync(function() {
+      self.all.map(function(user) {
+        if(loggedInUser._id === user._id) {
+          user.active = false;
+        }
+
+        return user;
+      });
+    });
+  });
+}
+angular
+  .module('OneApp')
   .controller("RoomsEditController", RoomsEditController);
 
 RoomsEditController.$inject = ["Room", "$state", "User"];
@@ -48078,6 +48111,13 @@ function RoomsIndexController(Room, $window, $rootScope, TokenService) {
   
   this.all = Room.query();
   this.currentUser = TokenService.decodeToken();
+
+  this.addUserToRoom = function(user, room) {
+    console.log(room.users);
+    room.users.push(user._id);
+    console.log(room.users);
+    room.$update();
+  }
 
   // this.joinRoom = function(user, room) {
   //   socket.emit('joinRoom', {user: user, room: room});
@@ -48130,6 +48170,7 @@ function RoomsShowController(Room, $state, $window, $rootScope, Message, User, T
   this.currentUser = TokenService.decodeToken();
   this.currentRoomId = null;
   this.currentRoomName = null;
+  this.joinedRoom = false;
 
   this.delete = function() {
     this.selected.$remove(function() {
@@ -48176,6 +48217,7 @@ function RoomsShowController(Room, $state, $window, $rootScope, Message, User, T
         self.all = res;
       });
     });
+    self.joinedRoom = true;
   };
 
   //leave Room
@@ -48238,37 +48280,4 @@ function RoomsShowController(Room, $state, $window, $rootScope, Message, User, T
     console.log("in chatBegin", self.currentRoomId, self.currentRoomName);
     socket.emit('chatBegin', {user: self.currentUser, roomId: roomId, roomName: self.roomName });
   }
-}
-angular
-  .module('OneApp')
-  .controller("UsersIndexController", UsersIndexController);
-
-UsersIndexController.$inject = ["User"];
-function UsersIndexController(User) {
-  this.all = User.query();
-  var self = this;
-
-  socket.on('active', function(loggedInUser) {
-    $rootScope.$applyAsync(function() {
-      self.all.map(function(user) {
-        if(loggedInUser._id === user._id) {
-          user.active = true;
-        }
-
-        return user;
-      });
-    });
-  });
-
-  socket.on('away', function(loggedInUser) {
-    $rootScope.$applyAsync(function() {
-      self.all.map(function(user) {
-        if(loggedInUser._id === user._id) {
-          user.active = false;
-        }
-
-        return user;
-      });
-    });
-  });
 }

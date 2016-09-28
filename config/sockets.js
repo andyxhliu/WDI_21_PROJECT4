@@ -24,7 +24,7 @@ module.exports = function(server) {
     // });
 
     socket.on('joinRoom', function(data) {
-      console.log(data);
+      console.log(data, 'join room data');
       // io.sockets.emit('inviteUser', data);
       socket.userId = data.user._id;
       socket.userName = data.user.name;

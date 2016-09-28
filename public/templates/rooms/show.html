@@ -48,17 +48,52 @@
   </div>
 
   <div class='col-lg-2 right-side-bar' id="chat-area">
-    <button ng-click="roomsShow.joinRoom(roomsShow.currentUser, roomsShow.selected)">Join Room</button>
-    <button ui-sref="roomsIndex" ng-click="roomsShow.leaveRoom(roomsShow.currentUser, roomsShow.selected)">Leave Room</button>
-    <ul>
-      <li ng-repeat="message in roomsShow.all track by $index">{{message.user.name}}: {{message.content}}</li>
-    </ul>
-<!--     <button ng-click="roomsShow.sendMessage()"></button> -->
-
-    <form ng-submit="roomsShow.sendMessage()">
-      <input type="text" ng-model="roomsShow.message">
-      <button type="submit">Send</button>
-    </form>
+    <div class="start-chat" ng-if="roomsShow.joinedRoom === false">
+      <div  id="start-chat-button" class="send_message">
+        <div class="icon"></div>
+        <div class="text" ng-click="roomsShow.joinRoom(roomsShow.currentUser, roomsShow.selected)">Start Chat</div>
+      </div>
+    </div>
+    <div class="chat_window">
+      <div class="top_menu">
+        <div class="buttons">
+            <div class="button close"></div>
+            <div class="button minimize"></div>
+            <div class="button maximize"></div>
+        </div>
+        <div class="title">Chat</div>
+        <button class="button-leave-room" ui-sref="roomsIndex" ng-click="roomsShow.leaveRoom(roomsShow.currentUser, roomsShow.selected)">Leave Room</button>
+      </div>
+      <ul class="messages">
+        <li ng-repeat="message in roomsShow.all track by $index" ng-class=" roomsShow.currentUser.name === message.user.name ? 'message right' : 'message left' ">
+          <div class="avatar"></div>
+          <div class="text_wrapper">
+              <div class="text">{{message.user.name}}: {{message.content}}</div>
+          </div>
+        </li>
+      </ul>
+      <div class="bottom_wrapper clearfix">
+        <form ng-submit="roomsShow.sendMessage()">
+          <div class="message_input_wrapper">
+            <input type="text" ng-model="roomsShow.message" class="message_input" placeholder="Type your message here..." />
+          </div>
+          <div class="send_message" ng-click="roomsShow.sendMessage()">
+            <div class="icon"></div>
+            <div class="text">Send</div>
+          </div>
+        </form>
+      </div>
+<!--       <div class="message_template">
+          <ul class="messages">
+            <li class="message" ng-repeat="message in roomsShow.all track by $index">
+              <div class="avatar"></div>
+              <div class="text_wrapper">
+                  <div class="text">{{message.user.name}}: {{message.content}}</div>
+              </div>
+            </li>
+          </ul>
+      </div> -->
+    </div>
   </div>
 
 </div>

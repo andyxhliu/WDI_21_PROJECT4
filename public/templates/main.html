@@ -49,11 +49,11 @@
     </div>
   </div>
 
-  <div class='col-lg-2 right-side-bar'>
-    <button id="new-group" class="btn btn-info">New Group + </button>
-    <h6>Your Group</h6>
+  <div class='col-lg-2 right-side-bar' ng-controller="RoomsIndexController as roomsIndex">
+    <button id="new-group" class="btn btn-info" ui-sref="roomsIndex">New Room + </button>
+    <h6>Your Rooms</h6>
     <ul class="nav nav-tabs nav-stacked">
-      <li><a href='#'>Another Link 1</a></li>
+      <li ng-repeat="room in roomsIndex.all" ng-if="room.users.includes(roomsIndex.currentUser._id) === true" ui-sref="roomsShow({ id: room._id })">{{room.name}}</li>
     </ul>
   </div>
 </div>

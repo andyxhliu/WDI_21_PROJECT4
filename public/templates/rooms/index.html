@@ -31,8 +31,9 @@
       <div class="row">
         <div class="col-lg-6 col-lg-offset-2" id="panel">
           <ul>
-            <li ng-repeat="room in roomsIndex.all" ui-sref="roomsShow({ id: room._id })">
+            <li ng-repeat="room in roomsIndex.all" ng-click="roomsIndex.addUserToRoom(roomsIndex.currentUser, room)" ui-sref="roomsShow({ id: room._id })">
               {{ room.name }}
+              <button>Join</button>
             </li>
           </ul>
           <button ui-sref="roomsNew">Add</button>
