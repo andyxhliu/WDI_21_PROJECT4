@@ -37,13 +37,52 @@
 
   <div id="page-content-wrapper">
     <div class="container">
-      <div class="row">
-        <div class="col-lg-6 col-lg-offset-2" id="panel">
-          <h1>{{ roomsShow.title }}</h1>
+      <!-- <div class="row">
+        <div class="col-lg-6 col-lg-offset-2" id="panel"> -->
+<!--           <h1>{{ roomsShow.title }}</h1>
+          <ul>
+            <li ng-repeat="track in roomsShow.selected.playlist">
+              {{track.title}}
+            </li>
+          </ul> -->
+          <div class="container">
+<!--               <div class="column center">
+                  <h1>HTML5 Audio Player</h1>
+                  <h6>w/ responsive playlist</h6>
+              </div> -->
+              <div class="column add-bottom">
+                  <div id="mainwrap">
+<!--                       <div id="nowPlay">
+                          <span class="left" id="npAction">Paused...</span>
+                          <span class="right" id="npTitle"></span>
+                      </div>
+                      <div id="audiowrap">
+                          <div id="audio0">
+                              <audio preload id="audio1" controls="controls">Your browser does not support HTML5 Audio!</audio>
+                          </div>
+                          <div id="tracks">
+                              <a id="btnPrev">&laquo;</a>
+                              <a id="btnNext">&raquo;</a>
+                          </div>
+                      </div> -->
+                      <div id="plwrap">
+                          <ul id="plList">
+                              <li ng-repeat="track in roomsShow.selected.playlist">
+                                  <div class="plItem">
+                                      <div class="plNum">01</div>
+                                      <div class="plTitle">{{track.title}}</div>
+                                      <div class="plLength">{{track.duration | times }}</div>
+                                  </div>
+                              </li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
           <!-- <img ng-src="{{ roomsShow.selected.image }}"> -->
           <!-- <button ui-sref="roomsEdit({ id: roomsShow.selected._id })">Edit</button> -->
-        </div>
-      </div>
+<!--         </div>
+      </div> -->
     </div>
   </div>
 
@@ -83,16 +122,6 @@
           </div>
         </form>
       </div>
-<!--       <div class="message_template">
-          <ul class="messages">
-            <li class="message" ng-repeat="message in roomsShow.all track by $index">
-              <div class="avatar"></div>
-              <div class="text_wrapper">
-                  <div class="text">{{message.user.name}}: {{message.content}}</div>
-              </div>
-            </li>
-          </ul>
-      </div> -->
     </div>
   </div>
 

@@ -4,6 +4,7 @@ var s3 = require('../config/s3');
 var roomSchema = new mongoose.Schema({
   name: { type: String },
   users: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
+  playlist: [],
   messages: [{ type: mongoose.Schema.ObjectId, ref: 'Message' }],
   image: { type: String },
   creator: { type: mongoose.Schema.ObjectId, ref: 'User' }
